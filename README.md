@@ -11,3 +11,45 @@ To tell this to EF you use the HasNoKey (see the NorthwindContex class).
 
 The final example call a function that do not return any result (void return type), and thus do not need to map the result to anything.
 
+ 
+         
+Assume that the following functions is present in the DB:
+         
+    CREATE OR REPLACE FUNCTION search (pattern VARCHAR) 
+        RETURNS TABLE (
+            p_id INT,
+	        p_name VARCHAR
+    ) 
+    AS $$
+    BEGIN
+        RETURN QUERY SELECT
+            productid,
+	        productname
+        FROM
+            products
+        WHERE
+            productname LIKE pattern;
+    END; $$ 
+             
+    LANGUAGE 'plpgsql';
+         
+
+    CREATE OR REPLACE FUNCTION insertcategory(id int, name varchar, description varchar)
+        RETURNS void AS $$
+    BEGIN
+        insert into categories values(id, name, desc);
+    END
+    $$  
+    LANGUAGE 'plpgsql';
+
+    CREATE OR REPLACE FUNCTION "public"."count_products"()
+    RETURNS "pg_catalog"."int4" AS $$
+    BEGIN
+        RETURN(select count(*)::int from products);
+    END
+    $$
+    LANGUAGE 'plpgsql';
+
+  You can the use either ADO or Entity Framework to execute the function.
+        
+

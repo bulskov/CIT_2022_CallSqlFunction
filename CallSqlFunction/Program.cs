@@ -4,11 +4,13 @@ using Npgsql;
 
 var connectionString = "host=localhost;db=northwind;uid=bulskov;pwd=henrik";
 
-UseAdo(connectionString);
-UseAdoStoredProcedure(connectionString);
-UseAdoViaEntityFramework(connectionString);
-UseEntityFramework(connectionString);
-UseEntityFrameworkToCallFunction(connectionString);
+//UseAdo(connectionString);
+//UseAdoStoredProcedure(connectionString);
+//UseAdoViaEntityFramework(connectionString);
+//UseEntityFramework(connectionString);
+//UseEntityFrameworkToCallFunction(connectionString);
+CallScalarAdoViaEntityFramework(connectionString);
+CallScalarWitExtensionMethod(connectionString);
 
 
 static void UseAdo(string connectionString)
@@ -103,4 +105,26 @@ static void UseEntityFrameworkToCallFunction(string connectionString)
 }
 
 
-   
+static void CallScalarAdoViaEntityFramework(string connectionString)
+{
+    Console.WriteLine("Call scalar with ADO from Entity Framework");
+    using var ctx = new NorthwindContex(connectionString);
+    using var connection = (NpgsqlConnection)ctx.Database.GetDbConnection();
+    connection.Open();
+
+    using var cmd = new NpgsqlCommand("select count_products()", connection);
+
+    Console.WriteLine(cmd.ExecuteScalar());
+}
+
+static void CallScalarWitExtensionMethod(string connectionString)
+{
+    Console.WriteLine("Call scalar with extension method");
+    using var ctx = new NorthwindContex(connectionString);
+
+    var result = ctx.ExecuteScalar("select count_products()");
+
+    Console.WriteLine(result);
+}
+
+
