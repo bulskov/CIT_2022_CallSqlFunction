@@ -52,7 +52,5 @@ Assume that the following functions is present in the DB:
     END
     $$
     LANGUAGE 'plpgsql';
-
-  You can the use either ADO or Entity Framework to execute the function.
         
 
